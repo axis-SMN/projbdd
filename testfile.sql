@@ -1,3 +1,4 @@
+
 SET GLOBAL default_storage_engine = 'InnoDB'; /* pour les index */
 SET TIME_ZONE ="+00:00";
 
@@ -158,7 +159,7 @@ CREATE TABLE trajet
     FOREIGN KEY(tr_itineraire_id) REFERENCES itineraire(iti_id) on delete cascade on update restrict /* si o supprime un itinéraire les trajets sont supprimés*/
 );
 DROP TABLE IF EXISTS horaire;
-CREATE TABLE horairelangueprincipale
+CREATE TABLE horaire
 (
     hor_trajet_id VARCHAR(50) NOT NULL,
     hor_itineraire_id INT NOT NULL,
@@ -316,9 +317,12 @@ From itineraire join horaire on hor_itineraire_id =iti_id;
 
 select iti_nom, trajet_id, temps_arret_moyen from resultat_temps_moyen;
 
-select * from arret;
+select arr_id, arr_nom,arr_latitude, arr_longitude from arret;
 
-SELECT  arr_nom, count(tr_id) FROM horaire rigth join arret on hor_ARRET_ID=arr_ID left join trajet on hor_trajet_id = tr_id left join service on tr_service_id=serv_id
-group by arr_nom;
+create view nb_arrets as 
+SELECT  arr_nom, serv_nom,count(tr_id) nb_train, count(hor_heure_arrivee) nb_arrivee, count(hor_HEURE_DEPART) nb_depart FROM arret left join horaire on hor_ARRET_ID=arr_ID left join trajet on hor_trajet_id = tr_id left join service on tr_service_id=serv_id
+group by arr_nom , serv_nom
+order by 3 desc;
+
 
 

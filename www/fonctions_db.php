@@ -55,6 +55,47 @@ function recherche_service($ma_db, $dateform){
  	
 }
 
+function select_gare($ma_db,$gare,$nb){
+	if($nb=="" and $gare!=""){
+		$sql ="select arr_nom,serv_nom,nb_train, nb_arrivee,nb_depart from nb_arrets where locate(lower(:nom),lower(arr_nom))>0;";
+	    $instru= $ma_db->prepare($sql);
+  		$instru->bindvalue('nom',$gare,PDO::PARAM_STR);
+	}
+	else if($nb!="" and $gare!=""){
+		$sql ="select arr_nom,serv_nom,nb_train, nb_arrivee,nb_depart from nb_arrets where locate(lower(:nom),lower(arr_nom))>0 and nb_train>=:nb ;";
+	    $instru= $ma_db->prepare($sql);
+  		$instru->bindvalue('nom',$gare,PDO::PARAM_STR);
+  		$instru->bindvalue('nb',$nb,PDO::PARAM_INT);
+	}
+	else if($nb!="" and $gare==""){
+		$sql ="select arr_nom,serv_nom,nb_train, nb_arrivee,nb_depart
+				 from nb_arrets where nb_train>=:nb;";
+	    $instru= $ma_db->prepare($sql);
+  		$instru->bindvalue('nb',$nb,PDO::PARAM_INT);
+	 }
+ 	$instru->execute();
+ 	$instru-> setfetchmode(PDO::FETCH_ASSOC);
+ 	$tab=$instru->fetchall();
+	
+ 	$return="\n<TABLE>";
+ 	$return.="<THEAD>";
+ 	$return.="<TD>Gares</TD><TD>Services</TD>
+ 				<TD>Nombres de trains</TD><TD>Nombres d'arrivées</TD>
+ 				<TD>Nombres de départ</TD>";
+ 	$return.="</THEAD>";
+ 	foreach ($tab as $ligne) {
+ 		$return.="\n<TR>";
+ 		$return.="<TD>".$ligne['arr_nom']."</TD>";
+ 		$return.="<TD>".$ligne['serv_nom']."</TD>";
+ 		$return.="<TD>".$ligne['nb_train']."</TD>";
+ 		$return.="<TD>".$ligne['nb_arrivee']."</TD>";
+ 		$return.="<TD>".$ligne['nb_depart']."</TD>";
+ 		$return.="</TR>";
 
+ 	}
+ 	$return.="\n</TABLE>";
+ 	return $return;
+
+}
 
  ?>
