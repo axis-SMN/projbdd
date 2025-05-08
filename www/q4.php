@@ -26,7 +26,7 @@ if(isset($_POST["action"])){ // si on arrive via le formulaire
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title></title>
-	<form action="loic.php" method="post">
+	<form action="q4.php" method="post">
 		<input type="date" name="date_form">
 		<input type="submit" name='action' value = "Tester">
 	</form>
